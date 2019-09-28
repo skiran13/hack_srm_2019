@@ -1,8 +1,2 @@
-# Track Me
 
-A new Flutter project.
-
-## Getting Started
-
-For help getting started with Flutter, view our online
-[documentation](https://flutter.io/).
+Smartphones have become an integral part of our everyday life. We make use of them for all our activities. So it becomes really difficult when an individual loses his/her smartphone. Around twenty thousand people lose their phone every single day.In such a careless world people can't thrive without their phones. SO there are apps which have been developed to help us find our phones in such a crisis. For instance google has their own 'Find My Phone' app which allows you to access your phone via your google account. However one major drawback of these apps is that it requires your phone to have an active internet connection when they get lost, that is obviously not possible because your phone data can't be switched on all the time.So, our team aims at achieving all this without an active internet connection to the mobile. Our objective is to have the app installed and make it run in the background in the phone all the time. Now, when we send a message(with a special string) from our phone through the app to the lost phone, the app recognises the message with the help of the string and sends the location of the lost phone to our phone

@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'themes/index.dart';
 import 'package:flutter/material.dart';
 import 'package:google_static_maps/map_provider.dart';
 import 'package:location/location.dart';
@@ -14,6 +14,8 @@ class MyApp extends StatefulWidget {
   }
 }
 
+String textMessage, sender;
+
 class MyAppState extends State<MyApp> {
   int _selectedTab = 0;
   final _pageOptions = [
@@ -27,17 +29,42 @@ class MyAppState extends State<MyApp> {
     });
   }
 
+  Location _location = new Location();
+  Map<String, double> _currentLocation;
+  Future<String> findUserLocation() async {
+    Map<String, double> location;
+    try {
+      location = await _location.getLocation();
+      setState(() {
+        _currentLocation = {
+          "latitude": location["latitude"],
+          "longitude": location['longitude'],
+        };
+      });
+      var message = location['latitude'].toString() +
+          ',' +
+          location['longitude'].toString();
+      return message;
+    } catch (exception) {
+      print('Exception:' + exception.toString());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     new SmsReceiver().onSmsReceived.listen((SmsMessage msg) {
-      print(msg.body);
-// SmsSender sender = new SmsSender();
-//        sender.sendSms(new SmsMessage(phone, m));
-      if (msg.body == 'Trackmenibba') {}
+      textMessage = msg.body;
+      sender = msg.sender;
+      if (msg.body == 'Trackmenibba') {
+        findUserLocation().then((val) {
+          SmsSender sender = new SmsSender();
+          sender.sendSms(new SmsMessage(msg.sender, val));
+        });
+      }
     });
     return new MaterialApp(
       theme: new ThemeData(
-        primarySwatch: Colors.lightBlue,
+        primarySwatch: Colors.blue,
         accentColor: Colors.lightBlueAccent,
       ),
       home: Scaffold(
@@ -104,8 +131,7 @@ class PhonePageState extends State<PhonePage> {
                     new Padding(padding: EdgeInsets.only(top: 140.0)),
                     new Text(
                       'Phone Number to Track',
-                      style: new TextStyle(
-                          color: Colors.lightBlueAccent, fontSize: 25.0),
+                      style: new TextStyle(color: Colors.blue, fontSize: 25.0),
                     ),
                     new Padding(padding: EdgeInsets.only(top: 20.0)),
                     new Form(
@@ -140,8 +166,15 @@ class PhonePageState extends State<PhonePage> {
                         children: <Widget>[
                           Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: RaisedButton(
-                                  onPressed: _submit, child: Text("Search")))
+                              child: OutlineButton(
+                                  textColor: Colors.blue,
+                                  highlightedBorderColor: Colors.blue,
+                                  onPressed: _submit,
+                                  child: Text("Search"),
+                                  borderSide: BorderSide(
+                                      color: Colors.blue,
+                                      style: BorderStyle.solid,
+                                      width: 0.8)))
                         ]),
                   ])),
                 ))));
@@ -188,7 +221,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  Future<String> findUserLocation() async {
+  Future<Null> findUserLocation() async {
     Map<String, double> location;
     try {
       location = await _location.getLocation();
@@ -199,12 +232,6 @@ class _MyHomePageState extends State<MyHomePage> {
         };
       });
       print(location);
-
-      var message = 'lat:' +
-          location['latitude'].toString() +
-          '\nlong:' +
-          location['longitude'].toString();
-      return message;
     } catch (exception) {
       print(exception);
     }
@@ -247,7 +274,12 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     var isActiveColor =
         (locations.length <= 1) ? Theme.of(context).primaryColor : Colors.grey;
-
+    new SmsReceiver().onSmsReceived.listen((SmsMessage msg) {
+      var message = msg.body.split(',');
+      _latController.text = message[0];
+      _lngController.text = message[1];
+      handleSubmitNewMarker();
+    });
     Widget body = new Container(
       child: new Column(
         children: <Widget>[
@@ -261,7 +293,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 zoom: zoom,
               ),
               new Positioned(
-                top: 130.0,
+                bottom: 90.0,
                 right: 10.0,
                 child: new FloatingActionButton(
                   onPressed: (locations.length <= 1) ? increaseZoom : null,
@@ -272,7 +304,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
               new Positioned(
-                top: 190.0,
+                bottom: 20.0,
                 right: 10.0,
                 child: new FloatingActionButton(
                   onPressed: (locations.length <= 1) ? decreaseZoom : null,
@@ -290,42 +322,24 @@ class _MyHomePageState extends State<MyHomePage> {
             child: new Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                new RaisedButton(
-                  onPressed: findUserLocation,
-                  child: new Text('Get My Current Location'),
-                  color: Theme.of(context).primaryColor,
-                ),
-                new RaisedButton(
-                  onPressed: resetMap,
-                  child: new Text('Reset Map'),
-                  color: Theme.of(context).primaryColor,
-                ),
-              ],
-            ),
-          ),
-          // Marker Placement Input Section
-          new Container(
-            margin: new EdgeInsets.symmetric(horizontal: 25.0, vertical: 25.0),
-            child: new Column(
-              children: <Widget>[
-                new TextField(
-                    controller: _latController,
-                    decoration: const InputDecoration(
-                      labelText: 'latitude',
-                    )),
-                new TextField(
-                    controller: _lngController,
-                    decoration: const InputDecoration(
-                      labelText: 'longitude',
-                    )),
-                new Container(
-                  margin: const EdgeInsets.symmetric(vertical: 10.0),
-                  child: new RaisedButton(
-                    onPressed: handleSubmitNewMarker,
-                    child: new Text('Place Marker'),
-                    color: Theme.of(context).primaryColor,
-                  ),
-                ),
+                new OutlineButton(
+                    onPressed: findUserLocation,
+                    child: new Text('Get My Current Location'),
+                    color: Colors.blue,
+                    textColor: Colors.blue,
+                    borderSide: BorderSide(
+                        color: Colors.blue,
+                        style: BorderStyle.solid,
+                        width: 0.8)),
+                new OutlineButton(
+                    onPressed: resetMap,
+                    child: new Text('Reset Map'),
+                    color: Colors.blue,
+                    textColor: Colors.blue,
+                    borderSide: BorderSide(
+                        color: Colors.blue,
+                        style: BorderStyle.solid,
+                        width: 0.8)),
               ],
             ),
           ),

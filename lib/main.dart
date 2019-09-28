@@ -6,24 +6,63 @@ import 'package:location/location.dart';
 
 void main() => runApp(new MyApp());
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return MyAppState();
+  }
+}
+
+class MyAppState extends State<MyApp> {
+  int _selectedTab = 0;
+  final _pageOptions = [
+    Text('Page 1'),
+    Text('Page 2'),
+    new MyHomePage(),
+  ];
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
-      title: 'Static Maps',
       theme: new ThemeData(
         primarySwatch: Colors.lightBlue,
         accentColor: Colors.lightBlueAccent,
       ),
-      home: new MyHomePage(title: 'Static Maps Demo'),
+      home: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text('Track Me'),
+        ),
+        body: _pageOptions[_selectedTab],
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: _selectedTab,
+          onTap: (int index) {
+            setState(() {
+              _selectedTab = index;
+            });
+          },
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              title: Text('Home'),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.category),
+              title: Text('Categories'),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.search),
+              title: Text('Search'),
+            ),
+          ],
+        ),
+      ),
+      //new MyHomePage(title: 'Static Maps Demo'),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-
-  final String title;
+  MyHomePage({Key key}) : super(key: key);
 
   @override
   _MyHomePageState createState() => new _MyHomePageState();
@@ -34,7 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
   StreamSubscription<Map<String, double>> _locationSub;
   Map<String, double> _currentLocation;
   List locations = [];
-  String googleMapsApi = 'AIzaSyDC9eRxSXlIjJJ3TEKxz89Bbo1hsG5gwJI';
+  String googleMapsApi = 'AIzaSyDoQ63i6i9oZm38nrIUSqlHXhv6nBIx2eE';
   TextEditingController _latController = new TextEditingController();
   TextEditingController _lngController = new TextEditingController();
   int zoom = 15;
@@ -192,9 +231,7 @@ class _MyHomePageState extends State<MyHomePage> {
     );
 
     return new Scaffold(
-      appBar: new AppBar(
-        title: new Text(widget.title),
-      ),
+      resizeToAvoidBottomPadding: false,
       body: body,
     );
   }

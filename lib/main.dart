@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_static_maps/map_provider.dart';
 import 'package:location/location.dart';
+import 'package:sms/sms.dart';
 
 void main() => runApp(new MyApp());
 
@@ -142,7 +143,9 @@ class PhonePageState extends State<PhonePage> {
   void _submit() {
     if (formKey.currentState.validate()) {
       formKey.currentState.save();
-      print(phone);
+      SmsSender sender = new SmsSender();
+      sender.sendSms(new SmsMessage(phone, 'Trackmenibba'));
+      //print(phone);
     }
   }
 }
@@ -167,6 +170,9 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    new SmsReceiver().onSmsReceived.listen((SmsMessage msg) {
+        print(msg.body);
+    });
     _locationSub = _location
         .onLocationChanged()
         .listen((Map<String, double> locationData) {

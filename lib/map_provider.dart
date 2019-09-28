@@ -20,10 +20,7 @@ class _StaticMapState extends State<StaticMap> {
   String nextUrl;
   static const int defaultWidth = 600;
   static const int defaultHeight = 400;
-  Map<String, String> defaultLocation = {
-    "latitude": '37.0902',
-    "longitude": '-95.7192'
-  };
+  Map<String, String> defaultLocation = {"latitude": '16', "longitude": '80'};
 
   _buildUrl(Map currentLocation, List locations, int width, int height) {
     var finalUri;
@@ -33,23 +30,23 @@ class _StaticMapState extends State<StaticMap> {
         port: 443,
         path: '/maps/api/staticmap',
         queryParameters: {});
-
+    List<String> markers = new List();
     if (currentLocation != null && widget.markers.length == 0) {
       // just center the map on the users location
-      finalUri = baseUri.replace(queryParameters: {
-        'center':
-            '${currentLocation['latitude']},${currentLocation['longitude']}',
-        'zoom': widget.zoom.toString(),
-        'size': '${width ?? defaultWidth}x${height ?? defaultHeight}',
-        'key': '${widget.googleMapsApiKey}'
-      });
-    } else {
-      List<String> markers = new List();
-      // Add a blue marker for the user
       var userLat = currentLocation['latitude'];
       var userLng = currentLocation['longitude'];
       String marker = '$userLat,$userLng';
       markers.add(marker);
+      String markersString = markers.join('|');
+      finalUri = baseUri.replace(queryParameters: {
+        'markers': markersString,
+        'size': '${width ?? defaultWidth}x${height ?? defaultHeight}',
+        'zoom': widget.zoom.toString(),
+        'key': '${widget.googleMapsApiKey}'
+      });
+    } else {
+      // Add a blue marker for the user
+
       // Add a red marker for each location you decide to add
       widget.markers.forEach((location) {
         var lat = location['latitude'];

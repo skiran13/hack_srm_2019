@@ -35,7 +35,10 @@ class _StaticMapState extends State<StaticMap> {
       // just center the map on the users location
       var userLat = currentLocation['latitude'];
       var userLng = currentLocation['longitude'];
+      // Add a blue marker for the user
       String marker = '$userLat,$userLng';
+      String m = 'color:blue';
+      markers.add(m);
       markers.add(marker);
       String markersString = markers.join('|');
       finalUri = baseUri.replace(queryParameters: {
@@ -45,8 +48,6 @@ class _StaticMapState extends State<StaticMap> {
         'key': '${widget.googleMapsApiKey}'
       });
     } else {
-      // Add a blue marker for the user
-
       // Add a red marker for each location you decide to add
       widget.markers.forEach((location) {
         var lat = location['latitude'];

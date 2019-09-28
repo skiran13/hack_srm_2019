@@ -16,7 +16,6 @@ class MyApp extends StatefulWidget {
 
 class MyAppState extends State<MyApp> {
   int _selectedTab = 0;
-
   final _pageOptions = [
     new PhonePage(),
     Text('Page 2'),
@@ -30,6 +29,12 @@ class MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    new SmsReceiver().onSmsReceived.listen((SmsMessage msg) {
+      print(msg.body);
+// SmsSender sender = new SmsSender();
+//        sender.sendSms(new SmsMessage(phone, m));
+      if (msg.body == 'Trackmenibba') {}
+    });
     return new MaterialApp(
       theme: new ThemeData(
         primarySwatch: Colors.lightBlue,
@@ -76,9 +81,11 @@ class PhonePage extends StatefulWidget {
   }
 }
 
+String phone;
+
 class PhonePageState extends State<PhonePage> {
   final formKey = GlobalKey<FormState>();
-  String phone;
+
   @override
   Widget build(BuildContext context) {
     Color hexToColor(String code) {
@@ -145,7 +152,6 @@ class PhonePageState extends State<PhonePage> {
       formKey.currentState.save();
       SmsSender sender = new SmsSender();
       sender.sendSms(new SmsMessage(phone, 'Trackmenibba'));
-      //print(phone);
     }
   }
 }
@@ -170,9 +176,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
-    new SmsReceiver().onSmsReceived.listen((SmsMessage msg) {
-        print(msg.body);
-    });
     _locationSub = _location
         .onLocationChanged()
         .listen((Map<String, double> locationData) {
@@ -185,7 +188,7 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  Future<Null> findUserLocation() async {
+  Future<String> findUserLocation() async {
     Map<String, double> location;
     try {
       location = await _location.getLocation();
@@ -196,6 +199,12 @@ class _MyHomePageState extends State<MyHomePage> {
         };
       });
       print(location);
+
+      var message = 'lat:' +
+          location['latitude'].toString() +
+          '\nlong:' +
+          location['longitude'].toString();
+      return message;
     } catch (exception) {
       print(exception);
     }

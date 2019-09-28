@@ -61,7 +61,7 @@ class _StaticMapState extends State<StaticMap> {
       finalUri = baseUri.replace(queryParameters: {
         'markers': markersString,
         'size': '${width ?? defaultWidth}x${height ?? defaultHeight}',
-        '${widget.googleMapsApiKey}': ''
+        'key': '${widget.googleMapsApiKey}'
       });
     }
     setState(() {

@@ -15,11 +15,18 @@ class MyApp extends StatefulWidget {
 
 class MyAppState extends State<MyApp> {
   int _selectedTab = 0;
+
   final _pageOptions = [
-    Text('Page 1'),
+    new PhonePage(),
     Text('Page 2'),
     new MyHomePage(),
   ];
+  void changeTab(int tab) {
+    setState(() {
+      this._selectedTab = tab;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
@@ -61,6 +68,85 @@ class MyAppState extends State<MyApp> {
   }
 }
 
+class PhonePage extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return PhonePageState();
+  }
+}
+
+class PhonePageState extends State<PhonePage> {
+  final formKey = GlobalKey<FormState>();
+  String phone;
+  @override
+  Widget build(BuildContext context) {
+    Color hexToColor(String code) {
+      return new Color(int.parse(code.substring(1, 7), radix: 16) + 0xFF000000);
+    }
+
+    return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: new Material(
+            child: new Container(
+                padding: const EdgeInsets.all(30.0),
+                color: Colors.white,
+                child: new Container(
+                  child: new Center(
+                      child: new Column(children: [
+                    new Padding(padding: EdgeInsets.only(top: 140.0)),
+                    new Text(
+                      'Phone Number to Track',
+                      style: new TextStyle(
+                          color: Colors.lightBlueAccent, fontSize: 25.0),
+                    ),
+                    new Padding(padding: EdgeInsets.only(top: 20.0)),
+                    new Form(
+                        key: formKey,
+                        child: TextFormField(
+                          decoration: new InputDecoration(
+                            labelText: "Enter Phone Number",
+                            fillColor: Colors.white,
+                            border: new OutlineInputBorder(
+                              borderRadius: new BorderRadius.circular(25.0),
+                              borderSide: new BorderSide(),
+                            ),
+                            //fillColor: Colors.green
+                          ),
+                          onSaved: (input) => {phone = input},
+                          validator: (val) {
+                            if (val.length == 0) {
+                              return "Phone Number cannot be empty";
+                            } else if (val.length > 10 || val.length < 10) {
+                              return "Phone Number is invalid";
+                            } else {
+                              return null;
+                            }
+                          },
+                          keyboardType: TextInputType.phone,
+                          style: new TextStyle(
+                            fontFamily: "Poppins",
+                          ),
+                        )),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: RaisedButton(
+                                  onPressed: _submit, child: Text("Search")))
+                        ]),
+                  ])),
+                ))));
+  }
+
+  void _submit() {
+    if (formKey.currentState.validate()) {
+      formKey.currentState.save();
+      print(phone);
+    }
+  }
+}
+
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key}) : super(key: key);
 
@@ -73,7 +159,7 @@ class _MyHomePageState extends State<MyHomePage> {
   StreamSubscription<Map<String, double>> _locationSub;
   Map<String, double> _currentLocation;
   List locations = [];
-  String googleMapsApi = 'AIzaSyDoQ63i6i9oZm38nrIUSqlHXhv6nBIx2eE';
+  String googleMapsApi = 'AIzaSyA6F9F3OpbYRKEejnLZ5mZ711bLyoZeI14';
   TextEditingController _latController = new TextEditingController();
   TextEditingController _lngController = new TextEditingController();
   int zoom = 15;
@@ -153,10 +239,12 @@ class _MyHomePageState extends State<MyHomePage> {
           // Map Section w/ +/- buttons
           new Stack(
             children: <Widget>[
-              new StaticMap(googleMapsApi,
-                  currentLocation: _currentLocation,
-                  markers: locations,
-                  zoom: zoom),
+              new StaticMap(
+                googleMapsApi,
+                currentLocation: _currentLocation,
+                markers: locations,
+                zoom: zoom,
+              ),
               new Positioned(
                 top: 130.0,
                 right: 10.0,
@@ -231,8 +319,8 @@ class _MyHomePageState extends State<MyHomePage> {
     );
 
     return new Scaffold(
-      resizeToAvoidBottomPadding: false,
-      body: body,
+      resizeToAvoidBottomInset: false, // set it to false
+      body: SingleChildScrollView(child: body),
     );
   }
 }

@@ -1,4 +1,4 @@
-# google_static_maps
+# Track Me
 
 A new Flutter project.
 

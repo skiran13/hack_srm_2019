@@ -19,7 +19,7 @@ class _StaticMapState extends State<StaticMap> {
       'https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Solid_white.svg/2000px-Solid_white.svg.png';
   String nextUrl;
   static const int defaultWidth = 600;
-  static const int defaultHeight = 600;
+  static const int defaultHeight = 800;
   Map<String, String> defaultLocation = {"latitude": '16', "longitude": '80'};
 
   _buildUrl(Map currentLocation, List locations, int width, int height) {

@@ -275,7 +275,7 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       _currentLocation = null;
       locations = [];
-      zoom = 4;
+      zoom = 8;
     });
   }
 
@@ -307,10 +307,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: new FloatingActionButton(
                   onPressed: (locations.length <= 1) ? increaseZoom : null,
                   backgroundColor: isActiveColor,
-                  child:new Icon(
-                          IconData(57669, fontFamily: 'MaterialIcons'),
-                          color: Colors.white,
-                        ),
+                  child: new Icon(
+                    IconData(57669, fontFamily: 'MaterialIcons'),
+                    color: Colors.white,
+                  ),
                 ),
               ),
               new Positioned(
@@ -320,9 +320,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   onPressed: (locations.length <= 1) ? decreaseZoom : null,
                   backgroundColor: isActiveColor,
                   child: new Icon(
-                          IconData(0xe15b, fontFamily: 'MaterialIcons'),
-                          color: Colors.white,
-                        ),
+                    IconData(0xe15b, fontFamily: 'MaterialIcons'),
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ],
@@ -330,18 +330,15 @@ class _MyHomePageState extends State<MyHomePage> {
           // Get Location & Reset Button Section
           new Container(
             margin: EdgeInsets.all(52),
-    padding: EdgeInsets.only(top: 52),
-    alignment: Alignment.center,
-            child:new OutlineButton(
-                    onPressed: resetMap,
-                    child: new Text('Reset Map',
-                        style: TextStyle(fontFamily: 'Cabin')),
-                    color: Colors.blue,
-                    textColor: Colors.blue,
-                    borderSide: BorderSide(
-                        color: Colors.blue,
-                        width: 0.8
-                        )),
+            padding: EdgeInsets.only(top: 20),
+            alignment: Alignment.center,
+            child: new OutlineButton(
+                onPressed: resetMap,
+                child: new Text('Reset Map',
+                    style: TextStyle(fontFamily: 'Cabin', fontSize: 24)),
+                color: Colors.blue,
+                textColor: Colors.blue,
+                borderSide: BorderSide(color: Colors.blue, width: 1.2)),
           ),
         ],
       ),

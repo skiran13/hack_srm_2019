@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'themes/index.dart';
 import 'package:flutter/material.dart';
 import 'package:google_static_maps/map_provider.dart';
 import 'package:location/location.dart';
@@ -15,19 +14,13 @@ class MyApp extends StatefulWidget {
 }
 
 String textMessage, sender;
+int _selectedTab = 0;
 
 class MyAppState extends State<MyApp> {
-  int _selectedTab = 0;
   final _pageOptions = [
     new PhonePage(),
-    Text('Page 2'),
     new MyHomePage(),
   ];
-  void changeTab(int tab) {
-    setState(() {
-      this._selectedTab = tab;
-    });
-  }
 
   Location _location = new Location();
   Map<String, double> _currentLocation;
@@ -53,12 +46,12 @@ class MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     new SmsReceiver().onSmsReceived.listen((SmsMessage msg) {
-      textMessage = msg.body;
-      sender = msg.sender;
       if (msg.body == 'Trackmenibba') {
-        findUserLocation().then((val) {
-          SmsSender sender = new SmsSender();
-          sender.sendSms(new SmsMessage(msg.sender, val));
+        Timer.periodic(new Duration(seconds: 10), (timer) {
+          findUserLocation().then((val) {
+            SmsSender sender = new SmsSender();
+            sender.sendSms(new SmsMessage(msg.sender, val));
+          });
         });
       }
     });
@@ -70,7 +63,7 @@ class MyAppState extends State<MyApp> {
       home: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: Text('Track Me'),
+          title: Text('Track Me', style: TextStyle(fontFamily: 'Cabin')),
         ),
         body: _pageOptions[_selectedTab],
         bottomNavigationBar: BottomNavigationBar(
@@ -83,15 +76,11 @@ class MyAppState extends State<MyApp> {
           items: [
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
-              title: Text('Home'),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.category),
-              title: Text('Categories'),
+              title: Text('Home', style: TextStyle(fontFamily: 'Cabin')),
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.search),
-              title: Text('Search'),
+              title: Text('Search', style: TextStyle(fontFamily: 'Cabin')),
             ),
           ],
         ),
@@ -122,67 +111,87 @@ class PhonePageState extends State<PhonePage> {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         home: new Material(
-            child: new Container(
-                padding: const EdgeInsets.all(30.0),
-                color: Colors.white,
+            child: new SingleChildScrollView(
                 child: new Container(
-                  child: new Center(
-                      child: new Column(children: [
-                    new Padding(padding: EdgeInsets.only(top: 140.0)),
-                    new Text(
-                      'Phone Number to Track',
-                      style: new TextStyle(color: Colors.blue, fontSize: 25.0),
-                    ),
-                    new Padding(padding: EdgeInsets.only(top: 20.0)),
-                    new Form(
-                        key: formKey,
-                        child: TextFormField(
-                          decoration: new InputDecoration(
-                            labelText: "Enter Phone Number",
-                            fillColor: Colors.white,
-                            border: new OutlineInputBorder(
-                              borderRadius: new BorderRadius.circular(25.0),
-                              borderSide: new BorderSide(),
-                            ),
-                            //fillColor: Colors.green
-                          ),
-                          onSaved: (input) => {phone = input},
-                          validator: (val) {
-                            if (val.length == 0) {
-                              return "Phone Number cannot be empty";
-                            } else if (val.length > 10 || val.length < 10) {
-                              return "Phone Number is invalid";
-                            } else {
-                              return null;
-                            }
-                          },
-                          keyboardType: TextInputType.phone,
+                    padding: const EdgeInsets.all(30.0),
+                    color: Colors.white,
+                    child: new Container(
+                      child: new Center(
+                          child: new Column(children: [
+                        new Padding(padding: EdgeInsets.only(top: 100.0)),
+                        new Icon(
+                          IconData(0xe1b3, fontFamily: 'MaterialIcons'),
+                          size: 150,
+                          color: Colors.redAccent,
+                        ),
+                        new Padding(padding: EdgeInsets.only(top: 120.0)),
+                        new Text(
+                          'Enter the',
                           style: new TextStyle(
-                            fontFamily: "Poppins",
-                          ),
-                        )),
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: OutlineButton(
-                                  textColor: Colors.blue,
-                                  highlightedBorderColor: Colors.blue,
-                                  onPressed: _submit,
-                                  child: Text("Search"),
-                                  borderSide: BorderSide(
-                                      color: Colors.blue,
-                                      style: BorderStyle.solid,
-                                      width: 0.8)))
-                        ]),
-                  ])),
-                ))));
+                              color: Colors.blue,
+                              fontSize: 25.0,
+                              fontFamily: 'Cabin'),
+                        ),
+                        new Text(
+                          'Phone Number to Track',
+                          style: new TextStyle(
+                              color: Colors.blue,
+                              fontSize: 25.0,
+                              fontFamily: 'Cabin'),
+                        ),
+                        new Padding(padding: EdgeInsets.only(top: 20.0)),
+                        new Form(
+                            key: formKey,
+                            child: TextFormField(
+                              decoration: new InputDecoration(
+                                labelText: "Enter Phone Number",
+                                fillColor: Colors.white,
+                                border: new OutlineInputBorder(
+                                  borderRadius: new BorderRadius.circular(25.0),
+                                  borderSide: new BorderSide(),
+                                ),
+                                //fillColor: Colors.green
+                              ),
+                              onSaved: (input) => {phone = input},
+                              validator: (val) {
+                                if (val.length == 0) {
+                                  return "Phone Number cannot be empty";
+                                } else if (val.length > 10 || val.length < 10) {
+                                  return "Phone Number is invalid";
+                                } else {
+                                  return null;
+                                }
+                              },
+                              keyboardType: TextInputType.phone,
+                              style: new TextStyle(
+                                fontFamily: "Poppins",
+                              ),
+                            )),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: OutlineButton(
+                                      textColor: Colors.blue,
+                                      highlightedBorderColor: Colors.blue,
+                                      onPressed: _submit,
+                                      child: Text("Search",
+                                          style:
+                                              TextStyle(fontFamily: 'Cabin')),
+                                      borderSide: BorderSide(
+                                          color: Colors.blue,
+                                          style: BorderStyle.solid,
+                                          width: 0.8)))
+                            ]),
+                      ])),
+                    )))));
   }
 
   void _submit() {
     if (formKey.currentState.validate()) {
       formKey.currentState.save();
+      _selectedTab = 1;
       SmsSender sender = new SmsSender();
       sender.sendSms(new SmsMessage(phone, 'Trackmenibba'));
     }
@@ -324,7 +333,8 @@ class _MyHomePageState extends State<MyHomePage> {
               children: <Widget>[
                 new OutlineButton(
                     onPressed: findUserLocation,
-                    child: new Text('Get My Current Location'),
+                    child: new Text('Get My Current Location',
+                        style: TextStyle(fontFamily: 'Cabin')),
                     color: Colors.blue,
                     textColor: Colors.blue,
                     borderSide: BorderSide(
@@ -333,7 +343,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         width: 0.8)),
                 new OutlineButton(
                     onPressed: resetMap,
-                    child: new Text('Reset Map'),
+                    child: new Text('Reset Map',
+                        style: TextStyle(fontFamily: 'Cabin')),
                     color: Colors.blue,
                     textColor: Colors.blue,
                     borderSide: BorderSide(

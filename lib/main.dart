@@ -307,9 +307,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: new FloatingActionButton(
                   onPressed: (locations.length <= 1) ? increaseZoom : null,
                   backgroundColor: isActiveColor,
-                  child: new Icon(
-                    const IconData(0xe145, fontFamily: 'MaterialIcons'),
-                  ),
+                  child:new Icon(
+                          IconData(57669, fontFamily: 'MaterialIcons'),
+                          color: Colors.white,
+                        ),
                 ),
               ),
               new Positioned(
@@ -319,29 +320,19 @@ class _MyHomePageState extends State<MyHomePage> {
                   onPressed: (locations.length <= 1) ? decreaseZoom : null,
                   backgroundColor: isActiveColor,
                   child: new Icon(
-                    const IconData(0xe15b, fontFamily: 'MaterialIcons'),
-                  ),
+                          IconData(0xe15b, fontFamily: 'MaterialIcons'),
+                          color: Colors.white,
+                        ),
                 ),
               ),
             ],
           ),
           // Get Location & Reset Button Section
           new Container(
-            margin: const EdgeInsets.only(top: 5.0),
-            child: new Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                new OutlineButton(
-                    onPressed: findUserLocation,
-                    child: new Text('Get My Current Location',
-                        style: TextStyle(fontFamily: 'Cabin')),
-                    color: Colors.blue,
-                    textColor: Colors.blue,
-                    borderSide: BorderSide(
-                        color: Colors.blue,
-                        style: BorderStyle.solid,
-                        width: 0.8)),
-                new OutlineButton(
+            margin: EdgeInsets.all(52),
+    padding: EdgeInsets.only(top: 52),
+    alignment: Alignment.center,
+            child:new OutlineButton(
                     onPressed: resetMap,
                     child: new Text('Reset Map',
                         style: TextStyle(fontFamily: 'Cabin')),
@@ -349,10 +340,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     textColor: Colors.blue,
                     borderSide: BorderSide(
                         color: Colors.blue,
-                        style: BorderStyle.solid,
-                        width: 0.8)),
-              ],
-            ),
+                        width: 0.8
+                        )),
           ),
         ],
       ),
